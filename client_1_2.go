@@ -13,7 +13,7 @@ import (
 
 // Клиент отправляет 100 запросов с лимитом 5 запросов в секунду
 func sendRequests(clientID int, wg *sync.WaitGroup) {
-	defer wg.Done() // Уменьшаем счетчик после завершения
+	defer wg.Done()
 
 	limiter := rate.NewLimiter(rate.Every(time.Second/5), 1) // Ограничение: 5 запросов в секунду
 	url := "http://localhost:8080/post"
@@ -39,15 +39,14 @@ func sendRequests(clientID int, wg *sync.WaitGroup) {
 					continue
 				}
 
-				statusCount[resp.StatusCode]++ // Запоминаем код ответа
+				statusCount[resp.StatusCode]++
 				resp.Body.Close()
 			}
 		}(i)
 	}
 
-	clientWg.Wait() // Ждем завершения всех воркеров
+	clientWg.Wait()
 
-	// Вывод статистики
 	fmt.Printf("Клиент %d завершил отправку запросов\n", clientID)
 	fmt.Printf("Отправлено запросов: %d\n", 100)
 	for status, count := range statusCount {
@@ -55,13 +54,12 @@ func sendRequests(clientID int, wg *sync.WaitGroup) {
 	}
 }
 
-// Запуск клиентов 1 и 2
 func RunClients12() {
 	var wg sync.WaitGroup
-	wg.Add(2) // Два клиента
+	wg.Add(2)
 
 	go sendRequests(1, &wg)
 	go sendRequests(2, &wg)
 
-	wg.Wait() // Ждем завершения всех клиентов
+	wg.Wait()
 }

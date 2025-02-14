@@ -47,7 +47,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	// Выбираем случайный статус
 	status := responses[rand.Intn(len(responses))]
 
-	// Логируем и обновляем статистику
 	stats.mu.Lock()
 	stats.Total++
 	stats.StatusCodes[status]++
@@ -66,9 +65,7 @@ func handleGetStats(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stats)
 }
 
-// Функция запуска сервера
 func RunServer() {
-	// Загружаем переменные окружения
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Ошибка загрузки .env")
@@ -79,9 +76,8 @@ func RunServer() {
 		log.Fatal("PORT не найден в .env")
 	}
 
-	rand.Seed(time.Now().UnixNano()) // Инициализация генератора случайных чисел
+	rand.Seed(time.Now().UnixNano())
 
-	// Регистрируем обработчики
 	http.HandleFunc("/post", handlePost)
 	http.HandleFunc("/stats", handleGetStats)
 

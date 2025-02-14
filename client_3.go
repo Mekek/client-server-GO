@@ -6,10 +6,8 @@ import (
 	"time"
 )
 
-// Функция проверки доступности сервера
 func checkServer() {
-	url := "http://localhost:8080/stats" // Используем GET-запрос к статистике сервера
-
+	url := "http://localhost:8080/stats"
 	for {
 		resp, err := http.Get(url)
 		if err != nil {
@@ -23,7 +21,6 @@ func checkServer() {
 	}
 }
 
-// Запуск третьего клиента
 func RunClient3() {
 	go checkServer()
 }
